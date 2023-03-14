@@ -22,4 +22,16 @@ pipeline {
             }
         }
     }
+    stage('Test') {
+        steps {
+            script {
+                def endpoint = sh(script: 'aws cloudformation describe-stacks --region $AWS_REGION --stack-name $STACK_NAME --query "Stacks[0].Outputs[?OutputKey==\'HelloWorldApi\'].OutputValue" --output text', returnStdout: true).trim()
+
+                def response = sh(script: "curl -s $endpoint/hello")
+                echo "Response from API Gateway: ${response.trim()}"
+
+                assert response.trim() == "hello world"
+            }
+        }
+    }
 }
