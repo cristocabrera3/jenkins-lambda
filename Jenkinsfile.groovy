@@ -16,21 +16,29 @@ pipeline {
             }
         }
 
-        stage('Deploy') {
+        stage('Build') {
             steps {
-                bat '"C:\\Program Files\\Amazon\\AWSCLIV2\\aws" cloudformation deploy --region %AWS_REGION% --template-file template.yaml --stack-name %STACK_NAME% --capabilities CAPABILITY_NAMED_IAM'
+                bat 'pip install -r requirements.txt -t package'
+                bat 'cd package && zip -r9 ../lambda_function.zip .'
             }
         }
-    }
-    stage('Test') {
-        steps {
-            script {
-                def endpoint = sh(script: 'aws cloudformation describe-stacks --region $AWS_REGION --stack-name $STACK_NAME --query "Stacks[0].Outputs[?OutputKey==\'HelloWorldApi\'].OutputValue" --output text', returnStdout: true).trim()
 
-                def response = sh(script: "curl -s $endpoint/hello")
-                echo "Response from API Gateway: ${response.trim()}"
+        stage('Deploy') {
+            steps {
+                bat 'aws cloudformation deploy --region %AWS_REGION% --template-file template.yaml --stack-name %STACK_NAME% --capabilities CAPABILITY_NAMED_IAM --parameter-overrides "LambdaCodeBucket=%AWS_S3_BUCKET_NAME% LambdaCodeKey=lambda_function.zip"'
+            }
+        }
 
-                assert response.trim() == "hello world"
+        stage('Test') {
+            steps {
+                script {
+                    def endpoint = sh(script: 'aws cloudformation describe-stacks --region $AWS_REGION --stack-name $STACK_NAME --query "Stacks[0].Outputs[?OutputKey==\'HelloWorldApi\'].OutputValue" --output text', returnStdout: true).trim()
+
+                    def response = sh(script: "curl -s $endpoint/hello")
+                    echo "Response from API Gateway: ${response.trim()}"
+
+                    assert response.trim() == "hello world"
+                }
             }
         }
     }
