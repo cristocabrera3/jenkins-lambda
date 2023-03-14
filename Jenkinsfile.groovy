@@ -19,14 +19,14 @@ pipeline {
                     // Move the lambda function file to the package directory
                     sh 'cp lambda_function.py ../package'
                     // Create the lambda function package
-                    bat 'cd .. && zip -r9 lambda_function.zip package/'
+                    bat 'cd .. && zip -r lambda_function.zip package/'
                 }
             }
         }
 
         stage('Deploy') {
             steps {
-                bat '"C:\\Program Files\\Amazon\\AWSCLIV2\\aws" cloudformation deploy --region %AWS_REGION% --template-file template.yaml --stack-name %STACK_NAME% --capabilities CAPABILITY_NAMED_IAM'
+                bat '"C:\\Program Files\\Amazon\\AWSCLIV2\\aws" cloudformation deploy --region %AWS_REGION% --template-file template.yaml --stack-name %STACK_NAME% --capabilities CAPABILITY_NAMED_IAM LambdaCodeKey=lambda_function.zip'
             }
         }
 
