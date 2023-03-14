@@ -10,13 +10,21 @@ pipeline {
     }
 
     stages {
-        stage('Checkout') {
+
+        stage('Checkout & Build') {
             steps {
-                git branch: 'master', url: 'https://github.com/cristocabrera3/jenkins-lambda.git'
+                dir('package') {
+                    // Clone the GitHub repository containing the lambda function file
+                    git url: 'https://github.com/yourusername/your-repo.git', branch: 'main'
+                    // Move the lambda function file to the package directory
+                    sh 'cp lambda_function.py ../package'
+                    // Create the lambda function package
+                    bat 'cd .. && zip -r9 lambda_function.zip package/'
+                }
             }
         }
 
-        stage('Build & Deploy') {
+        stage('Deploy') {
             steps {
                 bat '"C:\\Program Files\\Amazon\\AWSCLIV2\\aws" cloudformation deploy --region %AWS_REGION% --template-file template.yaml --stack-name %STACK_NAME% --capabilities CAPABILITY_NAMED_IAM'
             }
