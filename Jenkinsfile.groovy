@@ -15,7 +15,7 @@ pipeline {
             steps {
                 dir('package') {
                     // Clone the GitHub repository containing the lambda function file
-                    git url: '$GITHUB_REPO_URL', branch: 'master'
+                    git url: 'https://github.com/cristocabrera3/jenkins-lambda.git', branch: 'master'
                     // Move the lambda function file to the package directory
                     sh 'cp lambda_function.py ../package'
                     // Create the lambda function package
