@@ -16,15 +16,9 @@ pipeline {
             }
         }
 
-        stage('Build') {
+        stage('Build & Deploy') {
             steps {
-                bat 'cd package && zip -r9 ../lambda_function.zip .'
-            }
-        }
-
-        stage('Deploy') {
-            steps {
-                bat 'aws cloudformation deploy --region %AWS_REGION% --template-file template.yaml --stack-name %STACK_NAME% --capabilities CAPABILITY_NAMED_IAM --parameter-overrides "LambdaCodeBucket=%AWS_S3_BUCKET_NAME% LambdaCodeKey=lambda_function.zip"'
+                bat '"C:\\Program Files\\Amazon\\AWSCLIV2\\aws" cloudformation deploy --region %AWS_REGION% --template-file template.yaml --stack-name %STACK_NAME% --capabilities CAPABILITY_NAMED_IAM'
             }
         }
 
