@@ -18,7 +18,6 @@ pipeline {
 
         stage('Build') {
             steps {
-                bat 'pip install -r requirements.txt -t package'
                 bat 'cd package && zip -r9 ../lambda_function.zip .'
             }
         }
