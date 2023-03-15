@@ -18,13 +18,13 @@ pipeline {
                 // Move the lambda function file to the package directory
                 sh 'cp lambda_function.py package/'
                 // Create the lambda function package
-                powershell 'Compress-Archive -Path package/* -DestinationPath lambda_function.zip'
+                powershell 'Compress-Archive -Path ./* -DestinationPath ../lambda_function.zip'
             }
         }
 
         stage('Deploy') {
             steps {
-                bat '"C:\\Program Files\\Amazon\\AWSCLIV2\\aws" cloudformation deploy --region %AWS_REGION% --template-file template.yaml --stack-name %STACK_NAME% --capabilities CAPABILITY_NAMED_IAM LambdaCodeS3Bucket=<your-s3-bucket-name> LambdaCodeS3Key=lambda_function.zip'
+                bat '"C:\\Program Files\\Amazon\\AWSCLIV2\\aws" cloudformation deploy --region %AWS_REGION% --template-file template.yaml --stack-name %STACK_NAME% --capabilities CAPABILITY_NAMED_IAM LambdaCodeKey=lambda_function.zip'
             }
         }
 
