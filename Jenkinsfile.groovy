@@ -1,6 +1,6 @@
 pipeline {
     agent {
-        label 'Windows'
+        label 'windows'
     }
 
     environment {
