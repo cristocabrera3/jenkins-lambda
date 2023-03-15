@@ -18,7 +18,7 @@ pipeline {
 
         stage('Build & Deploy') {
             steps {
-                bat '"C:\\Program Files\\Amazon\\AWSCLIV2\\aws" cloudformation deploy --region %AWS_REGION% --template-file template.yaml --stack-name %STACK_NAME% --capabilities CAPABILITY_NAMED_IAM'
+                bat '"C:\\Program Files\\Amazon\\AWSCLIV2\\aws" cloudformation deploy --region %AWS_REGION% --template-file template.yaml --stack-name %STACK_NAME%'
             }
         }
 
