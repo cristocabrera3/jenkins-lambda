@@ -1,7 +1,9 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
 Description: 'sam-app
+
   Sample SAM Template for sam-app
+
   '
 Globals:
   Function:
@@ -11,16 +13,20 @@ Resources:
   HelloWorldFunction:
     Type: AWS::Serverless::Function
     Properties:
-      Handler: lambda_function.lambda_handler
+      Code:
+        Repository: https://github.com/cristocabrera3/jenkins-lambda
+      Handler: app.lambda_handler
       Runtime: python3.9
-      CodeRepository:
-        RepositoryUrl: https://github.com/cristocabrera3/jenkins-lambda
+      Architectures:
+        - x86_64
       Events:
         HelloWorld:
           Type: Api
           Properties:
             Path: /hello
             Method: get
+    Metadata:
+      SamResourceId: HelloWorldFunction
 Outputs:
   HelloWorldApi:
     Description: API Gateway endpoint URL for Prod stage for Hello World function
