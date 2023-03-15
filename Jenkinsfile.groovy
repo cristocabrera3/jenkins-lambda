@@ -10,7 +10,6 @@ pipeline {
     }
 
     stages {
-
         stage('Checkout & Build') {
             steps {
                 dir('package') {
@@ -19,23 +18,27 @@ pipeline {
                     // Move the lambda function file to the package directory
                     sh 'cp lambda_function.py ../package'
                     // Create the lambda function package
-                    bat 'cd .. && zip -r lambda_function.zip package/'
+                    sh 'cd .. && zip -r lambda_function.zip package/'
                 }
             }
         }
 
         stage('Deploy') {
             steps {
-                bat 'start "" "C:\\Program Files\\Amazon\\AWSCLIV2\\aws" cloudformation deploy --region %AWS_REGION% --template-file template.yaml --stack-name %STACK_NAME% --capabilities CAPABILITY_NAMED_IAM LambdaCodeKey=lambda_function.zip'
+                // Upload the Lambda function package to S3
+                sh "aws s3 cp lambda_function.zip s3://${S3_BUCKET}/${LAMBDA_FUNCTION_NAME}/lambda_function.zip --region ${AWS_REGION}"
+
+                // Create the CloudFormation stack and deploy the Lambda function
+                sh "aws cloudformation deploy --region ${AWS_REGION} --template-file template.yaml --stack-name ${STACK_NAME} --capabilities CAPABILITY_NAMED_IAM --parameter-overrides S3Bucket=${S3_BUCKET} S3Key=${LAMBDA_FUNCTION_NAME}/lambda_function.zip LambdaFunctionName=${LAMBDA_FUNCTION_NAME}"
             }
         }
 
         stage('Test') {
             steps {
                 script {
-                    def endpoint = sh(script: 'aws cloudformation describe-stacks --region $AWS_REGION --stack-name $STACK_NAME --query "Stacks[0].Outputs[?OutputKey==\'HelloWorldApi\'].OutputValue" --output text', returnStdout: true).trim()
+                    def endpoint = sh(script: "aws cloudformation describe-stacks --region ${AWS_REGION} --stack-name ${STACK_NAME} --query 'Stacks[0].Outputs[?OutputKey==`HelloWorldApi`].OutputValue' --output text", returnStdout: true).trim()
 
-                    def response = sh(script: "curl -s $endpoint/hello")
+                    def response = sh(script: "curl -s ${endpoint}/hello")
                     echo "Response from API Gateway: ${response.trim()}"
 
                     assert response.trim() == "hello world"
