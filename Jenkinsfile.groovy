@@ -10,35 +10,32 @@ pipeline {
     }
 
     stages {
+
         stage('Checkout & Build') {
             steps {
                 dir('package') {
                     // Clone the GitHub repository containing the lambda function file
                     git url: 'https://github.com/cristocabrera3/jenkins-lambda.git', branch: 'master'
                     // Move the lambda function file to the package directory
-                    sh 'cp lambda_function.py ../package'
+                    sh 'cp ../lambda_function.py .'
                     // Create the lambda function package
-                    sh 'cd .. && zip -r lambda_function.zip package/'
+                    bat 'powershell Compress-Archive -Path ./* -DestinationPath ../lambda_function.zip'
                 }
             }
         }
 
         stage('Deploy') {
             steps {
-                // Upload the Lambda function package to S3
-                sh "aws s3 cp lambda_function.zip s3://${S3_BUCKET}/${LAMBDA_FUNCTION_NAME}/lambda_function.zip --region ${AWS_REGION}"
-
-                // Create the CloudFormation stack and deploy the Lambda function
-                sh "aws cloudformation deploy --region ${AWS_REGION} --template-file template.yaml --stack-name ${STACK_NAME} --capabilities CAPABILITY_NAMED_IAM --parameter-overrides S3Bucket=${S3_BUCKET} S3Key=${LAMBDA_FUNCTION_NAME}/lambda_function.zip LambdaFunctionName=${LAMBDA_FUNCTION_NAME}"
+                sh 'aws cloudformation deploy --region $AWS_REGION --template-file template.yaml --stack-name $STACK_NAME --capabilities CAPABILITY_NAMED_IAM LambdaCodeS3Bucket=sam-app --parameter-overrides LambdaCodeS3Key=lambda_function.zip'
             }
         }
 
         stage('Test') {
             steps {
                 script {
-                    def endpoint = sh(script: "aws cloudformation describe-stacks --region ${AWS_REGION} --stack-name ${STACK_NAME} --query 'Stacks[0].Outputs[?OutputKey==`HelloWorldApi`].OutputValue' --output text", returnStdout: true).trim()
+                    def endpoint = sh(script: 'aws cloudformation describe-stacks --region $AWS_REGION --stack-name $STACK_NAME --query "Stacks[0].Outputs[?OutputKey==\'HelloWorldApi\'].OutputValue" --output text', returnStdout: true).trim()
 
-                    def response = sh(script: "curl -s ${endpoint}/hello")
+                    def response = sh(script: "curl -s $endpoint/hello")
                     echo "Response from API Gateway: ${response.trim()}"
 
                     assert response.trim() == "hello world"
