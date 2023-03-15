@@ -16,12 +16,6 @@ pipeline {
             }
         }
 
-        stage('Build') {
-            steps {
-                sh 'echo "No build steps required"'
-            }
-        }
-
         stage('Deploy') {
             steps {
                 sh "aws cloudformation deploy --region ${AWS_REGION} --template-file template.yaml --stack-name ${STACK_NAME} --capabilities CAPABILITY_NAMED_IAM --parameter-overrides CodeUri=${GITHUB_URL},Handler=lambda_function.lambda_handler"
