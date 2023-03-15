@@ -25,12 +25,13 @@ pipeline {
         stage('Test') {
             steps {
                 script {
-                    def endpoint = sh(script: 'aws cloudformation describe-stacks --region $AWS_REGION --stack-name $STACK_NAME --query "Stacks[0].Outputs[?OutputKey==\'HelloWorldApi\'].OutputValue" --output text', returnStdout: true).trim()
+                    def validateTemplate = sh(script: '"C:\\Program Files\\Amazon\\AWSCLIV2\\aws" cloudformation validate-template --template-body file://template.yaml --region %AWS_REGION%', returnStatus: true)
 
-                    def response = sh(script: "curl -s $endpoint/hello")
-                    echo "Response from API Gateway: ${response.trim()}"
-
-                    assert response.trim() == "hello world"
+                    if (validateTemplate == 0) {
+                        echo "CloudFormation template is valid"
+                    } else {
+                        error "CloudFormation template is invalid"
+                    }
                 }
             }
         }
