@@ -13,20 +13,18 @@ pipeline {
 
         stage('Checkout & Build') {
             steps {
-                dir('package') {
-                    // Clone the GitHub repository containing the lambda function file
-                    git url: 'https://github.com/cristocabrera3/jenkins-lambda.git', branch: 'master'
-                    // Move the lambda function file to the package directory
-                    sh 'cp lambda_function.py ../package'
-                    // Create the lambda function package
-                    powershell 'Compress-Archive -Path ./* -DestinationPath ../lambda_function.zip'
-                }
+                // Clone the GitHub repository containing the lambda function file
+                git url: 'https://github.com/cristocabrera3/jenkins-lambda.git', branch: 'master'
+                // Move the lambda function file to the package directory
+                sh 'cp lambda_function.py package/'
+                // Create the lambda function package
+                powershell 'Compress-Archive -Path package/* -DestinationPath lambda_function.zip'
             }
         }
 
         stage('Deploy') {
             steps {
-                sh 'aws cloudformation deploy --region $AWS_REGION --template-file template.yaml --stack-name $STACK_NAME --capabilities CAPABILITY_NAMED_IAM LambdaCodeS3Bucket=sam-app --parameter-overrides LambdaCodeS3Key=lambda_function.zip'
+                bat '"C:\\Program Files\\Amazon\\AWSCLIV2\\aws" cloudformation deploy --region %AWS_REGION% --template-file template.yaml --stack-name %STACK_NAME% --capabilities CAPABILITY_NAMED_IAM LambdaCodeS3Bucket=<your-s3-bucket-name> LambdaCodeS3Key=lambda_function.zip'
             }
         }
 
