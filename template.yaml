@@ -13,7 +13,11 @@ Resources:
   HelloWorldFunction:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: https://github.com/cristocabrera3/jenkins-lambda/blob/main/lambda_function.py
+      CodeUri:
+        Fn::Join:
+          - ""
+          - - "https://github.com/cristocabrera3/jenkins-lambda/raw/"
+            - "master/lambda_function.py"
       Handler: lambda_function.lambda_handler
       Runtime: python3.9
       Architectures:
