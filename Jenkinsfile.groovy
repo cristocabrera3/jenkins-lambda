@@ -26,7 +26,7 @@ pipeline {
 
         stage('Deploy') {
             steps {
-                bat '"C:\\Program Files\\Amazon\\AWSCLIV2\\aws" cloudformation deploy --region %AWS_REGION% --template-file template.yaml --stack-name %STACK_NAME% --capabilities CAPABILITY_NAMED_IAM LambdaCodeS3Bucket=%S3_BUCKET% LambdaCodeS3Key=lambda_function.zip'
+                bat 'start "" "C:\\Program Files\\Amazon\\AWSCLIV2\\aws" cloudformation deploy --region %AWS_REGION% --template-file template.yaml --stack-name %STACK_NAME% --capabilities CAPABILITY_NAMED_IAM LambdaCodeKey=lambda_function.zip'
             }
         }
 
