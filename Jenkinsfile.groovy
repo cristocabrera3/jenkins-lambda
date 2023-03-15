@@ -10,21 +10,21 @@ pipeline {
     }
 
     stages {
-
-        stage('Checkout & Build') {
+        stage('Checkout') {
             steps {
-                // Clone the GitHub repository containing the lambda function file
-                git url: 'https://github.com/cristocabrera3/jenkins-lambda.git', branch: 'master'
-                // Move the lambda function file to the package directory
-                sh 'cp lambda_function.py package/'
-                // Create the lambda function package
-                powershell 'Compress-Archive -Path ./* -DestinationPath ../lambda_function.zip'
+                checkout([$class: 'GitSCM', branches: [[name: '*/master']], userRemoteConfigs: [[url: GITHUB_REPO_URL]]])
+            }
+        }
+
+        stage('Build') {
+            steps {
+                sh 'echo "No build steps required"'
             }
         }
 
         stage('Deploy') {
             steps {
-                bat '"C:\\Program Files\\Amazon\\AWSCLIV2\\aws" cloudformation deploy --region %AWS_REGION% --template-file template.yaml --stack-name %STACK_NAME% --capabilities CAPABILITY_NAMED_IAM LambdaCodeKey=lambda_function.zip'
+                sh "aws cloudformation deploy --region ${AWS_REGION} --template-file template.yaml --stack-name ${STACK_NAME} --capabilities CAPABILITY_NAMED_IAM --parameter-overrides CodeUri=${GITHUB_URL},Handler=lambda_function.lambda_handler"
             }
         }
 
