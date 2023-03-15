@@ -12,13 +12,13 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                checkout([$class: 'GitSCM', branches: [[name: '*/master']], userRemoteConfigs: [[url: GITHUB_REPO_URL]]])
+                git branch: 'master', url: 'https://github.com/cristocabrera3/jenkins-lambda.git'
             }
         }
 
-        stage('Deploy') {
+        stage('Build & Deploy') {
             steps {
-                sh "aws cloudformation deploy --region ${AWS_REGION} --template-file template.yaml --stack-name ${STACK_NAME} --capabilities CAPABILITY_NAMED_IAM"
+                bat '"C:\\Program Files\\Amazon\\AWSCLIV2\\aws" cloudformation deploy --region %AWS_REGION% --template-file template.yaml --stack-name %STACK_NAME% --capabilities CAPABILITY_NAMED_IAM'
             }
         }
 
