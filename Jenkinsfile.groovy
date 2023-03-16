@@ -5,7 +5,7 @@ pipeline {
         AWS_REGION = 'us-east-1'
         GITHUB_REPO_URL = 'https://github.com/cristocabrera3/jenkins-lambda.git'
         STACK_NAME = 'my-stack'
-        BUCKET_NAME = 'myuniquebucket16032024'
+        BUCKET_NAME = 'myuniquebucket16032025'
     }
 
     stages {
@@ -24,7 +24,7 @@ pipeline {
         stage('Upload to S3') {
             steps {
                 withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'cloud_user']]) {
-                    bat '"C:\\Program Files\\Amazon\\AWSCLIV2\\aws" s3 cp lambda_function.py s3://${BUCKET_NAME}/'
+                    bat '"C:\\Program Files\\Amazon\\AWSCLIV2\\aws" s3 cp lambda_function.py s3://%BUCKET_NAME%/'
                 }
             }
         }
