@@ -15,19 +15,19 @@ pipeline {
         }
         stage('Build') {
             steps {
-                sh 'mkdir archive'
-                sh 'echo test > archive/test.txt'
+                "C:\\Program Files\\Git\\bin\\bash.exe" -c 'mkdir archive'
+                "C:\\Program Files\\Git\\bin\\bash.exe" -c 'echo test > archive/test.txt'
                 zip zipFile: 'test.zip', archive: false, dir: 'archive'
                 archiveArtifacts artifacts: 'test.zip', fingerprint: true
             }
         }
-        stage('Deploy') {
-            steps {
-                withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'cloud_user']]) {
-                    bat '"C:\\Program Files\\Amazon\\AWSCLIV2\\aws" cloudformation deploy --region %AWS_REGION% --template-file template.yaml --stack-name %STACK_NAME%'
-                }
-            }
-        }
+        // stage('Deploy') {
+        //     steps {
+        //         withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'cloud_user']]) {
+        //             bat '"C:\\Program Files\\Amazon\\AWSCLIV2\\aws" cloudformation deploy --region %AWS_REGION% --template-file template.yaml --stack-name %STACK_NAME%'
+        //         }
+        //     }
+        // }
         
 
         // stage('Test') {
