@@ -17,7 +17,7 @@ pipeline {
         stage('Create Bucket') {
             steps {
                 withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'cloud_user']]) {
-                    bat '"C:\\Program Files\\Amazon\\AWSCLIV2\\aws" s3api create-bucket --bucket ${BUCKET_NAME} --region ${AWS_REGION}'
+                    bat '"C:\\Program Files\\Amazon\\AWSCLIV2\\aws" s3api create-bucket --bucket ${BUCKET_NAME} --region %AWS_REGION%'
                 }
             }
         }
