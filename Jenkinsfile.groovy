@@ -24,17 +24,11 @@ pipeline {
         stage('Upload to S3') {
             steps {
                 withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'cloud_user']]) {
-                    sh "aws s3 cp lambda_function.py s3://${BUCKET_NAME}/"
+                    bat '"C:\\Program Files\\Amazon\\AWSCLIV2\\aws" s3 cp lambda_function.py s3://${BUCKET_NAME}/'
                 }
             }
         }
-        stage('Upload to S3') {
-            steps {
-                withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'cloud_user']]) {
-                    sh "aws s3 cp lambda_function.py s3://${BUCKET_NAME}/"
-                }
-            }
-        }
+
         // stage('Build') {
         //     steps {
         //         bat '"C:\\Program Files\\Git\\bin\\bash.exe" -c "mkdir python"'
