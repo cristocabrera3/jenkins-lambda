@@ -4,8 +4,7 @@ Resources:
   MyFunction:
     Type: AWS::Serverless::Function
     Properties:
-      Code:
-        ZipFile: fileb://python.zip
+      CodeUri: C:/ProgramData/Jenkins/.jenkins/workspace/jenkins-lambda/python.zip
       Handler: lambda_function.lambda_handler
       Runtime: python3.9
       MemorySize: 128
