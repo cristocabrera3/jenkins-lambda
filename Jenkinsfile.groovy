@@ -27,7 +27,7 @@ pipeline {
         }
         
 
-        // stage('Test1') {
+        // stage('Test') {
         //     steps {
         //         script {
         //             def validateTemplate = sh(script: '"C:\\Program Files\\Amazon\\AWSCLIV2\\aws" cloudformation validate-template --template-body file://template.yaml --region %AWS_REGION%', returnStatus: true)
