@@ -15,8 +15,8 @@ pipeline {
         }
         stage('Build') {
             steps {
-                "C:\\Program Files\\Git\\bin\\bash.exe" -c 'mkdir archive'
-                "C:\\Program Files\\Git\\bin\\bash.exe" -c 'echo test > archive/test.txt'
+                bat '"C:\\Program Files\\Git\\bin\\bash.exe" -c "mkdir archive"'
+                bat '"C:\\Program Files\\Git\\bin\\bash.exe" -c "echo test > archive/test.txt"'
                 zip zipFile: 'test.zip', archive: false, dir: 'archive'
                 archiveArtifacts artifacts: 'test.zip', fingerprint: true
             }
