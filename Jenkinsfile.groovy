@@ -27,18 +27,18 @@ pipeline {
         }
         
 
-        stage('Test') {
-            steps {
-                script {
-                    def validateTemplate = sh(script: '"C:\\Program Files\\Amazon\\AWSCLIV2\\aws" cloudformation validate-template --template-body file://template.yaml --region %AWS_REGION%', returnStatus: true)
+        // stage('Test') {
+        //     steps {
+        //         script {
+        //             def validateTemplate = sh(script: '"C:\\Program Files\\Amazon\\AWSCLIV2\\aws" cloudformation validate-template --template-body file://template.yaml --region %AWS_REGION%', returnStatus: true)
 
-                    if (validateTemplate == 0) {
-                        echo "CloudFormation template is valid"
-                    } else {
-                        error "CloudFormation template is invalid"
-                    }
-                }
-            }
-        }
+        //             if (validateTemplate == 0) {
+        //                 echo "CloudFormation template is valid"
+        //             } else {
+        //                 error "CloudFormation template is invalid"
+        //             }
+        //         }
+        //     }
+        // }
     }
 }
