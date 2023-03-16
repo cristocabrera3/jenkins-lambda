@@ -18,7 +18,7 @@ pipeline {
         stage('Build') {
             steps {
                 bat '"C:\\Program Files\\Git\\bin\\bash.exe" -c "mkdir python"'
-                bat '"C:\\Program Files\\Git\\bin\\bash.exe" -c "mv lambda_function.py python/lambda_function.py"'
+                bat '"C:\\Program Files\\Git\\bin\\bash.exe" -c "cp lambda_function.py python/lambda_function.py"'
                 zip zipFile: 'python.zip', archive: false, dir: 'python'
                 archiveArtifacts artifacts: 'python.zip', fingerprint: true
             }
@@ -47,7 +47,12 @@ pipeline {
             }
         }
         
-
+        stage('Cleaning up') {
+            steps {
+                bat '"C:\\Program Files\\Git\\bin\\bash.exe" -c "rm python"'
+                bat '"C:\\Program Files\\Git\\bin\\bash.exe" -c "rm python.zip"'
+            }
+        }
         // stage('Test1') {
         //     steps {
         //         script {
