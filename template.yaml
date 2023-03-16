@@ -4,7 +4,8 @@ Resources:
   MyFunction:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: python.zip
+      Code:
+        ZipFile: fileb://python.zip
       Handler: lambda_function.lambda_handler
       Runtime: python3.9
       MemorySize: 128
