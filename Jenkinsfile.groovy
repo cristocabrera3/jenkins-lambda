@@ -49,7 +49,7 @@ pipeline {
         
         stage('Cleaning up') {
             steps {
-                bat '"C:\\Program Files\\Git\\bin\\bash.exe" -c "rm python"'
+                bat '"C:\\Program Files\\Git\\bin\\bash.exe" -c "rm -r python"'
                 bat '"C:\\Program Files\\Git\\bin\\bash.exe" -c "rm python.zip"'
             }
         }
