@@ -5,7 +5,7 @@ pipeline {
         AWS_REGION = 'us-east-1'
         GITHUB_REPO_URL = 'https://github.com/cristocabrera3/jenkins-lambda.git'
         STACK_NAME = 'my-stack'
-        BUCKET_NAME = 'jenkinsdemobucket16032013'
+        BUCKET_NAME = 'myuniquebucket16032024'
     }
 
     stages {
@@ -17,7 +17,7 @@ pipeline {
         stage('Create Bucket') {
             steps {
                 withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'cloud_user']]) {
-                    bat '"C:\\Program Files\\Amazon\\AWSCLIV2\\aws" s3api create-bucket --bucket ${BUCKET_NAME} --region %AWS_REGION%'
+                    bat '"C:\\Program Files\\Amazon\\AWSCLIV2\\aws" s3api create-bucket --bucket %BUCKET_NAME% --region %AWS_REGION%'
                 }
             }
         }
