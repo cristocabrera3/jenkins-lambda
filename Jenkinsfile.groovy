@@ -15,7 +15,10 @@ pipeline {
         }
         stage('Build') {
             steps {
-                bat 'zip -r python.zip .'
+                sh 'mkdir archive'
+                sh 'echo test > archive/test.txt'
+                zip zipFile: 'test.zip', archive: false, dir: 'archive'
+                archiveArtifacts artifacts: 'test.zip', fingerprint: true
             }
         }
         stage('Deploy') {
