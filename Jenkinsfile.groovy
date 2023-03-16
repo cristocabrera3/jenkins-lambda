@@ -1,5 +1,7 @@
 pipeline {
-    agent any
+    agent {
+        label 'windows'
+    }
 
     environment {
         AWS_REGION = 'us-east-1'
@@ -15,19 +17,19 @@ pipeline {
         }
         stage('Build') {
             steps {
-                bat '"C:\\Program Files\\Git\\bin\\bash.exe" -c "mkdir archive"'
-                bat '"C:\\Program Files\\Git\\bin\\bash.exe" -c "echo test > archive/test.txt"'
-                zip zipFile: 'test.zip', archive: false, dir: 'archive'
-                archiveArtifacts artifacts: 'test.zip', fingerprint: true
+                bat '"C:\\Program Files\\Git\\bin\\bash.exe" -c "mkdir python"'
+                bat '"C:\\Program Files\\Git\\bin\\bash.exe" -c "mv lambda_function.py python/lambda_function.py"'
+                zip zipFile: 'python.zip', archive: false, dir: 'python'
+                archiveArtifacts artifacts: 'python.zip', fingerprint: true
             }
         }
-        // stage('Deploy') {
-        //     steps {
-        //         withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'cloud_user']]) {
-        //             bat '"C:\\Program Files\\Amazon\\AWSCLIV2\\aws" cloudformation deploy --region %AWS_REGION% --template-file template.yaml --stack-name %STACK_NAME%'
-        //         }
-        //     }
-        // }
+        stage('Deploy') {
+            steps {
+                withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'cloud_user']]) {
+                    bat '"C:\\Program Files\\Amazon\\AWSCLIV2\\aws" cloudformation deploy --region %AWS_REGION% --template-file template.yaml --stack-name %STACK_NAME%'
+                }
+            }
+        }
         
 
         // stage('Test') {
