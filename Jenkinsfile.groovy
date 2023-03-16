@@ -5,8 +5,7 @@ pipeline {
         AWS_REGION = 'us-east-1'
         GITHUB_REPO_URL = 'https://github.com/cristocabrera3/jenkins-lambda.git'
         STACK_NAME = 'my-stack'
-        BUCKET_PREFIX = 'my-bucket'
-        BUCKET_NAME = "${BUCKET_PREFIX}-${UUID.randomUUID()}"
+        BUCKET_NAME = "my-bucket-${env.BUILD_ID}".toLowerCase()
     }
 
     stages {
