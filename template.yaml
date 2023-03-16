@@ -13,7 +13,7 @@ Resources:
   HelloWorldFunction:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: s3://myuniquebucket16032025/lambda_function.py
+      CodeUri: s3://myuniquebucket16032025/python.zip
       Handler: lambda_function.lambda_handler
       Runtime: python3.9
       Architectures:
