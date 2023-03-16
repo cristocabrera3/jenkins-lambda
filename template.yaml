@@ -37,3 +37,9 @@ Outputs:
       Fn::GetAtt:
         - HelloWorldFunction
         - Arn
+  HelloWorldFunctionIamRole:
+    Description: Implicit IAM Role created for Hello World function
+    Value:
+      Fn::GetAtt:
+        - HelloWorldFunctionRole
+        - Arn
